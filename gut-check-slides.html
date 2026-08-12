@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gut Check — UNESCO Youth Hackathon 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F4F7FA;
+    --paper-dim: #E8EDF3;
+    --ink: #171A23;
+    --ink-soft: #4B5468;
+    --indigo: #3B4FD9;
+    --indigo-dim: #DDE2FA;
+    --trust: #22935A;
+    --trust-bg: #DDF1E4;
+    --hold: #C97A17;
+    --hold-bg: #F7E7CE;
+    --alert: #D14B3F;
+    --alert-bg: #FBE0DC;
+    --line: #D3DAE4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    overflow:hidden;
+  }
+  .deck{
+    height:100vh;
+    width:100vw;
+    position:relative;
+  }
+  .slide{
+    position:absolute;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    padding: 6vh 9vw;
+  }
+  .slide.active{display:flex;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--indigo);
+    margin-bottom:1.4rem;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(2.4rem, 6vw, 5rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+  }
+  h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(1.8rem, 4vw, 3.2rem);
+    line-height:1.08;
+    margin-bottom:1.6rem;
+    max-width:20ch;
+  }
+  p.lede{
+    font-size:clamp(1.1rem, 1.7vw, 1.5rem);
+    color:var(--ink-soft);
+    max-width:42ch;
+    line-height:1.5;
+    margin-top:1.2rem;
+  }
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:0.32em 0.85em;
+    border-radius:999px;
+  }
+  .tag.trust{background:var(--trust-bg); color:var(--trust);}
+  .tag.hold{background:var(--hold-bg); color:var(--hold);}
+  .tag.alert{background:var(--alert-bg); color:var(--alert);}
+
+  /* Slide 1: Title */
+  #s1{ }
+  #s1 h1{margin-bottom:0.5rem;}
+  .tagline{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:clamp(1rem,1.6vw,1.3rem);
+    color:var(--ink-soft);
+    margin-top:1.2rem;
+  }
+  .badge-row{display:flex; gap:0.6rem; margin-top:2.2rem;}
+
+  /* Slide 2: Problem */
+  .split{
+    display:flex; gap:5vw; align-items:flex-start; flex-wrap:wrap;
+  }
+  .problem-line{
+    display:flex; align-items:baseline; gap:1rem; margin-bottom:1.1rem;
+  }
+  .problem-line .num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--indigo);
+    font-size:0.95rem;
+    font-weight:600;
+  }
+  .problem-line span.txt{
+    font-size:clamp(1.1rem,1.9vw,1.55rem);
+    max-width:34ch;
+  }
+
+  /* Slide 3: chat mockup */
+  .phone{
+    width:min(360px, 80vw);
+    background:#fff;
+    border-radius:20px;
+    border:1px solid var(--line);
+    box-shadow: 0 20px 40px -20px rgba(23,26,35,0.25);
+    padding:1.1rem;
+  }
+  .bubble{
+    background:var(--paper-dim);
+    border-radius:14px;
+    padding:0.75rem 1rem;
+    font-size:0.95rem;
+    margin-bottom:0.6rem;
+    line-height:1.35;
+  }
+  .bubble.me{
+    background:var(--indigo-dim);
+    margin-left:1.5rem;
+  }
+  .bubble.verdict{
+    display:flex; align-items:center; gap:0.5rem;
+    background:transparent;
+    padding-left:0;
+  }
+  .content-row{
+    display:flex; gap:5vw; align-items:center; flex-wrap:wrap;
+  }
+  .content-row .text-col{max-width:34ch;}
+  ul.checks{list-style:none; margin-top:1.2rem;}
+  ul.checks li{
+    font-size:clamp(1rem,1.5vw,1.2rem);
+    padding:0.5rem 0 0.5rem 1.4rem;
+    position:relative;
+    color:var(--ink-soft);
+    border-top:1px solid var(--line);
+  }
+  ul.checks li:first-child{border-top:none;}
+  ul.checks li::before{
+    content:"→";
+    position:absolute; left:0; color:var(--indigo); font-weight:600;
+  }
+
+  /* Slide 4: First 5 card */
+  .card5{
+    width:min(430px, 82vw);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:1.6rem 1.8rem;
+    box-shadow: 0 20px 40px -20px rgba(23,26,35,0.25);
+  }
+  .card5 .card-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.3rem;
+    margin-bottom:0.2rem;
+  }
+  .card5 .card-sub{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--alert);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:1rem;
+  }
+  .step{
+    display:flex; gap:0.8rem; align-items:flex-start;
+    padding:0.55rem 0;
+    border-top:1px solid var(--line);
+  }
+  .step:first-of-type{border-top:none;}
+  .step .snum{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--indigo);
+    font-weight:600;
+    font-size:0.85rem;
+    flex-shrink:0;
+    width:1.4rem;
+  }
+  .step .stxt{font-size:0.95rem; line-height:1.35;}
+
+  /* Slide 5: message mockup */
+  .msg-thread{
+    width:min(380px, 82vw);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:1.2rem;
+    box-shadow: 0 20px 40px -20px rgba(23,26,35,0.25);
+  }
+  .msg-thread .sender{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:0.6rem;
+  }
+
+  /* Slide 6: close */
+  .close-list{margin-top:1.6rem;}
+  .close-list .item{
+    display:flex; gap:0.9rem; align-items:baseline;
+    padding:0.6rem 0;
+    border-top:1px solid var(--line);
+    max-width:44ch;
+  }
+  .close-list .item:first-child{border-top:none;}
+  .close-list .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--indigo);
+    flex-shrink:0;
+    margin-top:0.55rem;
+  }
+  .close-list .item span{font-size:1.05rem; color:var(--ink-soft);}
+  .signoff{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,2.4vw,1.8rem);
+    margin-top:2.4rem;
+    color:var(--ink);
+  }
+
+  /* nav */
+  .nav-dots{
+    position:fixed;
+    bottom:4vh;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:0.5rem;
+    z-index:10;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--line);
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .dot.on{background:var(--indigo);}
+  .hint{
+    position:fixed;
+    bottom:4vh;
+    right:5vw;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--ink-soft);
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    z-index:10;
+  }
+  .brand-mark{
+    position:fixed;
+    top:4vh;
+    right:5vw;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    z-index:10;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .slide.active{animation:rise 0.45s ease both;}
+    @keyframes rise{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <div class="slide active" id="s1">
+    <div class="eyebrow">UNESCO Youth Hackathon 2026 · Trust Challenge #1</div>
+    <h1>Gut Check</h1>
+    <div class="tagline">Trust shouldn't take longer than the lie does.</div>
+    <div class="badge-row">
+      <span class="tag trust">Trust it</span>
+      <span class="tag hold">Hold up</span>
+      <span class="tag alert">Check further</span>
+    </div>
+  </div>
+
+  <div class="slide" id="s2">
+    <div class="eyebrow">The problem</div>
+    <h2>It's not a detection problem. It's a speed problem.</h2>
+    <div class="split">
+      <div>
+        <div class="problem-line"><span class="num">01</span><span class="txt">A lie moves through a group chat faster than a fact-check can load.</span></div>
+        <div class="problem-line"><span class="num">02</span><span class="txt">The content that fools teens most comes from people they already trust.</span></div>
+        <div class="problem-line"><span class="num">03</span><span class="txt">A deepfake of a classmate isn't misinformation. It's a bullying emergency.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s3">
+    <div class="eyebrow">01 · The 3-Question Check</div>
+    <div class="content-row">
+      <div class="text-col">
+        <h2>A gut check that runs in 15 seconds.</h2>
+        <ul class="checks">
+          <li>Who posted this first?</li>
+          <li>Does it show up on two unrelated accounts?</li>
+          <li>Is it making you feel something extreme right now?</li>
+        </ul>
+      </div>
+      <div class="phone">
+        <div class="bubble me">is this deepfake real??</div>
+        <div class="bubble">Who posted it first — can you find them?</div>
+        <div class="bubble">Same claim on 2 accounts that don't know each other?</div>
+        <div class="bubble">Feeling something extreme right now?</div>
+        <div class="bubble verdict"><span class="tag hold">Hold up</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s4">
+    <div class="eyebrow">02 · The First 5 Card</div>
+    <div class="content-row">
+      <div class="text-col">
+        <h2>For deepfakes of someone you know.</h2>
+        <p class="lede">A fixed sequence for the first five minutes — no calm required.</p>
+      </div>
+      <div class="card5">
+        <div class="card-title">First 5</div>
+        <div class="card-sub">Deepfake of a classmate — do this now</div>
+        <div class="step"><span class="snum">01</span><span class="stxt">Don't forward it.</span></div>
+        <div class="step"><span class="snum">02</span><span class="stxt">Screenshot the source and link.</span></div>
+        <div class="step"><span class="snum">03</span><span class="stxt">Tell one named adult.</span></div>
+        <div class="step"><span class="snum">04</span><span class="stxt">Don't confront anyone alone.</span></div>
+        <div class="step"><span class="snum">05</span><span class="stxt">Report to platform + school, same time.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s5">
+    <div class="eyebrow">03 · Flag, Don't Blame</div>
+    <div class="content-row">
+      <div class="text-col">
+        <h2>When your friend's the one who shared it.</h2>
+        <p class="lede">Flag the content, not the person. No callout, no confrontation.</p>
+      </div>
+      <div class="msg-thread">
+        <div class="sender">Draft — send privately</div>
+        <div class="bubble">hey, this got fact-checked as false, thought you'd want to know before more people see it</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" id="s6">
+    <div class="eyebrow">Where this stands</div>
+    <h2>Built to actually ship, not just pitch.</h2>
+    <div class="close-list">
+      <div class="item"><div class="dot"></div><span>Runs on free no-code tools — no custom AI model needed.</span></div>
+      <div class="item"><div class="dot"></div><span>No login, no data stored, nothing auto-sent.</span></div>
+      <div class="item"><div class="dot"></div><span>We already run a peer community — a real place to pilot it.</span></div>
+    </div>
+    <div class="signoff">Gut Check.</div>
+  </div>
+
+</div>
+
+<div class="brand-mark">Gut Check</div>
+<div class="nav-dots" id="dots"></div>
+<div class="hint">← →</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  let i = 0;
+
+  slides.forEach((_, idx) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (idx === 0 ? ' on' : '');
+    d.addEventListener('click', () => go(idx));
+    dotsEl.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+
+  function go(n){
+    slides[i].classList.remove('active');
+    dots[i].classList.remove('on');
+    i = (n + slides.length) % slides.length;
+    slides[i].classList.add('active');
+    dots[i].classList.add('on');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowRight' || e.key === ' ') go(i+1);
+    if(e.key === 'ArrowLeft') go(i-1);
+  });
+
+  let touchX = null;
+  document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    if(touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(dx > 50) go(i-1);
+    if(dx < -50) go(i+1);
+    touchX = null;
+  });
+</script>
+
+</body>
+</html>
